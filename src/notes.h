@@ -2,21 +2,6 @@
 // wave stuff
 //=========================================
 #define cnt_notes(x) (sizeof(x) / sizeof(x[0]))
-//sinewave
-#define SINE 0
-uint16_t SineValues[256];
-//sawtooth
-#define SAW 1
-uint16_t SawValues[256];
-//bc cant have fully staggered arrays; use struct workaround
-struct waves{//data about each?
-  uint16_t *wavedat;
-  uint16_t size;
-};
-waves wavedata[]{
-  {SineValues,cnt_notes(SineValues)},
-  {SawValues,cnt_notes(SineValues)}
-};
 //=========================================
 //Notes
 //=========================================
