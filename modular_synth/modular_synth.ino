@@ -292,7 +292,7 @@ void setup(){
 //  sigmaDeltaAttachPin(25, 0);
 //  sigmaDeltaWrite(0, 0);
 //l= APU(25);
-  oscillator oppai = {
+  oscillator test = {
     .waveform = 1,
     .pitch = apu.get_freq(E,1),
     .ctr=2000,
@@ -312,7 +312,7 @@ void setup(){
   }; 
   Serial.begin(9600);
 //  Serial.print(0);
-  apu.append(oppai);
+  apu.append(test);
 //  apu.append(eli);
 //  apu.append(gre);
 //  Serial.println(l.data[0].waveform);
