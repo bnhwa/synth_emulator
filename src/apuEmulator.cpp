@@ -11,7 +11,6 @@
       item.ctr = (item.ctr)*cycles_per_measure/float(bpm)*speed;//
       if (item.pos!=0){
       	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
-      	// Serial.println("asddd");
       	// Serial.println(item.pos);
       }
       append(item);
@@ -69,10 +68,19 @@
     float APU::get_freq(byte l_nt,byte oct) {//get note frequency
     	return narr[l_nt] * pow(2, oct);
     }
-    void APU::add_oscillator_queue(oscillator item){
-    	//add to measure queue
-    	sn_data.add_note(item,cycles_per_measure,(this->speed),bpm);
+    void APU::add_oscillator_queue(uint16_t waveform, uint16_t pitch, uint8_t octave, float note_len,float pos){
+    	oscillator tmp = {
+    		waveform,
+    		get_freq(pitch,octave),
+    		note_len,
+    		pos
+    	};
+    	sn_data.add_note(tmp,cycles_per_measure,(this->speed),bpm);
     }
+    // void APU::add_oscillator_queue(oscillator item){
+    // 	//add to measure queue
+    // 	sn_data.add_note(item,cycles_per_measure,(this->speed),bpm);
+    // }
     void APU::append(oscillator item) {
       	//append oscillaror directly to be played, raw
       	// scale 4/beats to that of program cycle
@@ -107,7 +115,7 @@
           next_cycle += cycle_period;
           //queued
           for (byte i =0; i< sn_data.osc_length;i++){
-            //update counter for current oscillators
+            //update counter for enqueued oscillators
 			oscillator* idx = &sn_data.data[i];
             idx->pos-=0.001;//*speed;
             if(idx->pos <=0){
@@ -123,7 +131,7 @@
 			oscillator* idx = &active_oscs.data[i];
             idx->ctr-=0.001;//*speed;
             if(idx->ctr <=0){
-                remove(i);
+                active_oscs.remove(i);
 
             }
           }

@@ -47,20 +47,21 @@ void setup(){
     .pos = 3
   }; 
   Serial.begin(9600);
-//  Serial.print(0);
-//    apu.append(test);
-//  apu.append(eli);
-//  apu.append(gre);
-    apu.add_oscillator_queue(test);
-  apu.add_oscillator_queue(eli);
-  apu.add_oscillator_queue(gre);
+  //waveform,note,octave,note_len,note_pos within measure
+    apu.add_oscillator_queue(1,C,1,1,0);
+    apu.add_oscillator_queue(1,E,1,1,1);
+    apu.add_oscillator_queue(1,G,1,1,2);
+    apu.add_oscillator_queue(1,C,1,2,3);
+    apu.add_oscillator_queue(1,E,1,2,3);
+    apu.add_oscillator_queue(1,G,1,2,3);
+    apu.add_oscillator_queue(1,C,2,2,3);
 //  Serial.println(l.data[0].waveform);
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);
   
 //  initWaves();
 //  apu.setSpeed(0.5);
-//  apu.setSpeed(2);
+  apu.setSpeed(8);
   apu.iterateAll();
 }
 
@@ -75,5 +76,7 @@ void loop(){
 
 //  l.iterateAll();
   Serial.println("end");
+//  String ok = "3.5";
+//  Serial.println(ok.toFloat());
   delay(1000);
 }

@@ -39,15 +39,6 @@ struct oscillator{
 //=========================================
 //Polytonic Audio Processing Unit
 //=========================================
-struct song_notes{//song notes within a measure
-  //cuz potential variable lengths of waveforms
-  uint16_t waveform;
-  uint16_t pitch;//c cs d e
-  uint16_t octave; 
-  uint16_t ctr;//how long in beats out of 60/60
-  float startpos;//start within measure between 0 1 2 3 4, 2 being middle, 4 being end
-};
-#define sn_size sizeof(song_notes)
 //Measure "stack"
 //String "AS5_pos_length"
 class OscList{//max of 150 notes per measure, waveform, duration, change that to float
@@ -77,7 +68,9 @@ class APU {
     //change/get APU Params
     void setBPM(byte bpm);
     void setSpeed(float speed);
-    void add_oscillator_queue(oscillator item);//add to measure stack
+    void add_oscillator_queue(uint16_t waveform, uint16_t pitch, uint8_t octave, float note_len,float pos);
+    // void add_oscillator_queue(oscillator item);//add to measure stack
+    // void add_oscillator_queue(oscillator item);
     //void add_measure_notes(song_notes sn);
     uint16_t num_active_oscillators(); 
 	private:
