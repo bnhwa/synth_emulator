@@ -1,5 +1,29 @@
 #include "apuEmulator.h"
+	//OSCList
+	OscList::OscList(uint16_t limit){
+		this->limit = limit;
+	}
 
+    void OscList::add_note(oscillator item, uint32_t cycles_per_measure, float speed, byte bpm) {
+      // scale 4/beats to that of program cycle
+      // 1 bpm is approximately 1 sec
+      //length in cycles
+      item.ctr = (item.ctr)*cycles_per_measure/float(bpm)*speed;//
+      append(item);
+    }
+	void OscList::append(oscillator item){
+	  if (osc_length < limit){
+        data[osc_length++] = item;
+      }
+      // Serial.println("length");
+      // Serial.println(osc_length);
+	}
+    void OscList::remove(byte index) {
+        if (index >= limit) return;
+        memmove(&data[index], &data[index+1], (osc_length - index - 1)*osc_size);
+        osc_length--;
+    }
+	//APU
     APU::APU(byte pin_use){
       mic_pin = pin_use;
       dcval = 0;
@@ -36,35 +60,33 @@
 	  }
 	}
     float APU::getNote(byte n){
-      return narr[n];
+    	return narr[n];
     }
     float APU::get_freq(byte l_nt,byte oct) {//get note frequency
-      return narr[l_nt] * pow(2, oct);
+    	return narr[l_nt] * pow(2, oct);
     }
-
+    void APU::add_oscillator_queue(oscillator item){
+    	//add to measure queue
+    	sn_data.add_note(item,cycles_per_measure,(this->speed),bpm);
+    }
     void APU::append(oscillator item) {
-      // scale 4/beats to that of program cycle
-      // 1 bpm is approximately 1 sec
-      item.ctr = (item.ctr)*cycle_period/float(bpm)*(this->speed);//
-      Serial.println(item.ctr);
-      if (osc_length < 8){
-        data[osc_length++] = item;
-      }
-//      Serial.println("length");
-//      Serial.println(osc_length);
+      	//append oscillaror directly to be played, raw
+      	// scale 4/beats to that of program cycle
+      	// 1 bpm is approximately 1 sec
+      	//length in cycles
+      	this->active_oscs.add_note(item,cycles_per_measure,(this->speed),bpm);
    
     }
     void APU::remove(byte index) {
-        if (index >= osc_length) return;
-        memmove(&data[index], &data[index+1], (osc_length - index - 1)*osc_size);
-        osc_length--;
+    	//remove active oscillator directly 
+        this->active_oscs.remove(index);
     }
 
     void APU::iterateAll(){
       next_cycle = ESP.getCycleCount();
       next_audio = ESP.getCycleCount();
 
-      while (osc_length>0){
+      while (active_oscs.osc_length>0){
         uint32_t t_now = ESP.getCycleCount();
         if (t_last > t_now) {
           next_cycle = t_now;
@@ -79,10 +101,10 @@
             cpu_cycles = 0;
           }
           next_cycle += cycle_period;
-          for (byte i =0; i<osc_length;i++){
+          for (byte i =0; i< active_oscs.osc_length;i++){
             //update counter for current oscillators
-            oscillator* idx = &data[i];
-            idx->ctr-=0.001*speed;
+			oscillator* idx = &active_oscs.data[i];
+            idx->ctr-=0.001;//*speed;
             if(idx->ctr <=0){
                 remove(i);
             }
@@ -99,7 +121,7 @@
           if (audio_counter >= audio_divisor) {
             //play audio
             audio_counter = 0;
-            for (byte i =0; i<osc_length;i++){
+            for (byte i =0; i<active_oscs.osc_length;i++){
               playAudio(i);
             }
           }
@@ -109,7 +131,7 @@
 
     }
     void APU::playAudio(byte index){
-      oscillator* idx = &data[index];
+      oscillator* idx = &active_oscs.data[index];
       uint16_t wlen = wavedata[ idx->waveform].size;
       uint16_t* wpos = wavedata[ idx->waveform].wavedat;
       idx->pos+=idx->pitch;
@@ -118,6 +140,8 @@
       if (idx->pos >= wlen) idx->pos = 0;
         sigmaDeltaWrite(0, wpos[int(idx->pos)]);
     }
+   
+
     //modify/get APU params
     void APU::setBPM(byte bpm){
       if (bpm)
@@ -134,6 +158,6 @@
   	  }
     }
     uint16_t APU::num_active_oscillators() {//get note frequency
-      return this->osc_length;
+      return this->active_oscs.osc_length;
     }
 

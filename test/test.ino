@@ -13,19 +13,19 @@ void setup(){
   oscillator test = {
     .waveform = 1,
     .pitch = apu.get_freq(C,1),
-    .ctr=24,
+    .ctr=4,
     .pos = 0
   }; 
   oscillator eli = {
     .waveform = 1,
     .pitch = apu.get_freq(E,1),
-    .ctr=12,
+    .ctr=2,
     .pos = 8
   }; 
   oscillator gre = {
     .waveform = 1,
     .pitch = apu.get_freq(G,1),
-    .ctr=6,//1 beat
+    .ctr=1,//1 beat
     .pos = 0
   }; 
   Serial.begin(9600);
@@ -38,8 +38,8 @@ void setup(){
 //  Serial.println(l.data[0].waveform);
   
 //  initWaves();
-  apu.setSpeed(0.5);
-  apu.setSpeed(2);
+//  apu.setSpeed(0.5);
+//  apu.setSpeed(2);
   apu.iterateAll();
 }
 
@@ -53,6 +53,8 @@ void loop(){
 //  delay(1);
 
 //  l.iterateAll();
-  Serial.println(0);
+  Serial.println("end");
+//  String ok = "3.5";
+//  Serial.println(ok.toFloat());
   delay(1000);
 }

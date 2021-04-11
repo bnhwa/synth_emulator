@@ -3,6 +3,7 @@
 
 #include "arduino.h"
 #define max_oscs 10 //max number of oscillators
+#define max_notes_per_measure 64 //max notes per measure
 //=========================================
 // wave stuff
 //=========================================
@@ -31,13 +32,35 @@ struct oscillator{
   float pitch;
   float ctr;
   float pos;
+  //when inactive, pos is used to count down till oscillator is played and appended on active stack
+  //when active, used to track waveform position 
 };
 #define osc_size sizeof(oscillator)
-
 //=========================================
 //Polytonic Audio Processing Unit
 //=========================================
-
+struct song_notes{//song notes within a measure
+  //cuz potential variable lengths of waveforms
+  uint16_t waveform;
+  uint16_t pitch;//c cs d e
+  uint16_t octave; 
+  uint16_t ctr;//how long in beats out of 60/60
+  float startpos;//start within measure between 0 1 2 3 4, 2 being middle, 4 being end
+};
+#define sn_size sizeof(song_notes)
+//Measure "stack"
+//String "AS5_pos_length"
+class OscList{//max of 150 notes per measure, waveform, duration, change that to float
+  public:
+    OscList(uint16_t limit);
+    uint16_t osc_length = 0;
+    uint16_t limit;
+    oscillator data[max_notes_per_measure];
+    void add_note(oscillator item, uint32_t cycles_per_measure, float speed, byte bpm );
+    void append(oscillator item);
+    void remove(byte index);
+};
+//APU
 class APU {
 	public:
 	  //mic
@@ -47,13 +70,15 @@ class APU {
     APU(byte pin_use);
     float getNote(byte n);
     float get_freq(byte l_nt,byte oct);
-    void append(oscillator item);
-    void remove(byte index);
+    void append(oscillator item);//direct append to play
+    void remove(byte index);//remove directly
     void iterateAll();
 	  void playAudio(byte index);
     //change/get APU Params
     void setBPM(byte bpm);
     void setSpeed(float speed);
+    void add_oscillator_queue(oscillator item);//add to measure stack
+    //void add_measure_notes(song_notes sn);
     uint16_t num_active_oscillators(); 
 	private:
     //APU Vars
@@ -75,7 +100,13 @@ class APU {
     float narr[13] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14, 30.87,0 };
     float dcval = 0;//value to output to pin, combined/scaled vals of oscillators
     uint16_t osc_length = 0;
-    oscillator data[max_oscs];
+    OscList active_oscs = OscList(max_oscs);
+    OscList sn_data = OscList(max_notes_per_measure);
+    // //stack 
+    // oscillator data[max_oscs];
+    // //song notes temp stack
+    
+    // oscillator sn_data[max_notes_per_measure];
     //synth/song params
 
     byte bpm = 4;
