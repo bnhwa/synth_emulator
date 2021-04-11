@@ -2,7 +2,7 @@
 #define _APUEMULATOR_h
 
 #include "arduino.h"
-#define max_oscs 8 //max number of oscillators
+#define max_oscs 10 //max number of oscillators
 //=========================================
 // wave stuff
 //=========================================
@@ -17,6 +17,10 @@ struct waves{//data about each?
   uint16_t *wavedat;
   uint16_t size;
 };
+//=========================================
+//Song Structs
+//=========================================
+
 
 //=========================================
 //Oscillator
@@ -47,9 +51,10 @@ class APU {
     void remove(byte index);
     void iterateAll();
 	  void playAudio(byte index);
-    //change APU Params
+    //change/get APU Params
     void setBPM(byte bpm);
     void setSpeed(float speed);
+    uint16_t num_active_oscillators(); 
 	private:
     //APU Vars
     const uint32_t APU_FREQ =  1789773 / 2 / 2; // APU is half speed of NES CPU
@@ -57,10 +62,13 @@ class APU {
     const uint16_t audio_rate = 44100;
     const uint32_t audio_period = F_CPU / audio_rate;//5442
     const uint32_t note_offset = 1000;//1000 for esp32
+    const uint32_t def_cycles_per_measure = 4000;
     uint32_t next_audio = 0;
     uint32_t next_cycle = 0;
-    uint32_t cpu_cycles = 0;//aka how many measures hae passed
-    uint32_t apu_cycles = 0;
+    uint32_t cpu_cycles = 0;//4000 cycles by default = 1 measure
+    uint32_t cycles_per_measure = def_cycles_per_measure;
+    uint32_t measure_cycles = 0;
+    uint32_t measure_count = 0;//measure by measure, 
     uint32_t t_last = 0;
     const uint8_t audio_divisor = 2;
     uint8_t audio_counter = 0;
@@ -73,7 +81,7 @@ class APU {
 
     byte bpm = 4;
     float speed=1;
-    uint16_t SineValues[256];;//set beats per measure, default 4/4
+    uint16_t SineValues[256];//set beats per measure, default 4/4
     uint16_t SawValues[256];
 		void initPitch();
 		void initWaves();

@@ -11,3 +11,8 @@ This library is made by me to turn an ESP32 into a fully functional polytonic sy
 ### TODO:
 
 Add ADSR Envelope
+
+
+
+
+

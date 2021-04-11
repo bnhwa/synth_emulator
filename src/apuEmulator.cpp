@@ -41,6 +41,7 @@
     float APU::get_freq(byte l_nt,byte oct) {//get note frequency
       return narr[l_nt] * pow(2, oct);
     }
+
     void APU::append(oscillator item) {
       // scale 4/beats to that of program cycle
       // 1 bpm is approximately 1 sec
@@ -72,16 +73,21 @@
     
         if (t_now >= next_cycle) {
           //clock audio processing unit
+          // if (measure_cycles>=4000){
+          //   measure_count+=1;
+          //   Serial.println("inc");
+          // }
           next_cycle += cycle_period;
           for (byte i =0; i<osc_length;i++){
             //update counter for current oscillators
             oscillator* idx = &data[i];
-            idx->ctr-=0.001;//quarter note = 200
+            idx->ctr-=0.001*speed;
             if(idx->ctr <=0){
                 remove(i);
             }
           }
-          apu_cycles += 2;
+
+          cpu_cycles += 1;
         }
     
         if (t_now >= next_audio) {
@@ -111,13 +117,23 @@
       if (idx->pos >= wlen) idx->pos = 0;
         sigmaDeltaWrite(0, wpos[int(idx->pos)]);
     }
-    //modify APU params
+    //modify/get APU params
     void APU::setBPM(byte bpm){
       if (bpm)
       this->bpm = bpm;
     }
     void APU::setSpeed(float speed){
-      if (speed)
-      this->speed = speed;
+    	//set zero = reset
+      if (speed>0){
+      	this->speed = speed;
+      	measure_cycles = measure_cycles*speed;
+      	// Serial.println(measure_cycles);
+  	  }else{
+  	  	this->speed = 1;
+  	  	measure_cycles = def_cycles_per_measure;
+  	  }
+    }
+    uint16_t APU::num_active_oscillators() {//get note frequency
+      return this->osc_length;
     }
 
