@@ -72,7 +72,7 @@ class APU {
     //synth/song params
 
     byte bpm = 4;
-    float speed;
+    float speed=1;
     uint16_t SineValues[256];;//set beats per measure, default 4/4
     uint16_t SawValues[256];
 		void initPitch();

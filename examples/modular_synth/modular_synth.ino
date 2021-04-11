@@ -310,7 +310,7 @@ void setup(){
     .pos = 0
   }; 
   oscillator eli = {
-    .waveform = 1d,
+    .waveform = 1,
     .pitch = apu.get_freq(E,1),
     .ctr=12,
     .pos = 8

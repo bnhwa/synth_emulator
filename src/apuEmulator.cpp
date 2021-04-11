@@ -43,14 +43,14 @@
     }
     void APU::append(oscillator item) {
       // scale 4/beats to that of program cycle
-      // 1 bpm is approximately one sec
-      // scale 4/beats to that of program cycle
       // 1 bpm is approximately 1 sec
       item.ctr = (item.ctr)*cycle_period/float(bpm)*(this->speed);//
       Serial.println(item.ctr);
       if (osc_length < 8){
         data[osc_length++] = item;
       }
+//      Serial.println("length");
+//      Serial.println(osc_length);
    
     }
     void APU::remove(byte index) {

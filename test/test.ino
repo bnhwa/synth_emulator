@@ -12,27 +12,27 @@ void setup(){
 //l= APU(25);
   oscillator test = {
     .waveform = 1,
-    .pitch = apu.get_freq(E,1),
-    .ctr=2000,
+    .pitch = apu.get_freq(C,1),
+    .ctr=24,
     .pos = 0
   }; 
   oscillator eli = {
     .waveform = 1,
     .pitch = apu.get_freq(E,1),
-    .ctr=10000,
-    .pos = 0
+    .ctr=12,
+    .pos = 8
   }; 
   oscillator gre = {
     .waveform = 1,
     .pitch = apu.get_freq(G,1),
-    .ctr=5000,//1 beat
+    .ctr=6,//1 beat
     .pos = 0
   }; 
   Serial.begin(9600);
 //  Serial.print(0);
-  apu.append(test);
-//  apu.append(eli);
-//  apu.append(gre);
+    apu.append(test);
+  apu.append(eli);
+  apu.append(gre);
 //  Serial.println(l.data[0].waveform);
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);
@@ -51,6 +51,6 @@ void loop(){
 //  delay(1);
 
 //  l.iterateAll();
-//  Serial.println(apu.narr[0]);
+  Serial.println(0);
   delay(1000);
 }
