@@ -150,7 +150,7 @@ public:
     byte mic_pin;
     //vars
     bool playing = true;
-    const uint32_t APU_FREQ =  1789773 / 2 / 2; // APU is half speed of NES CPU, and we are running half the resolution of that to stay light.
+    const uint32_t APU_FREQ =  1789773 / 2 / 2; // APU is half speed of NES CPU
     const uint32_t cycle_period = F_CPU / APU_FREQ;
     const uint16_t audio_rate = 44100;
     const uint32_t audio_period = F_CPU / audio_rate;//5442
@@ -159,11 +159,14 @@ public:
     uint32_t next_cycle = 0;
     uint32_t cpu_cycles = 0;
     uint32_t apu_cycles = 0;//
-    uint32_t t_last = 0;
+
     uint32_t cycles_delta = 0;
     uint32_t cycles_so_far = 0;
     const uint8_t audio_divisor = 2;
     uint8_t audio_counter = 0;
+    uint32_t t_last = 0;
+    float speed = 1;
+    byte bpm = 4;
     //tables
     //note freq array for lowest octave; gets converted to that based on APU emulator audio period
     float narr[13] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14, 30.87,0 };
@@ -196,9 +199,15 @@ public:
       return narr[l_nt] * pow(2, oct);
     }
     void append(oscillator item) {
-        if (osc_length < 8){
-          data[osc_length++] = item;
-        }
+      // scale 4/beats to that of program cycle
+      // 1 bpm is approximately 1 sec
+      item.ctr = (item.ctr)*cycle_period/float(bpm)*(this->speed);//
+      Serial.println(item.ctr);
+      if (osc_length < 8){
+        data[osc_length++] = item;
+      }
+//      Serial.println("length");
+//      Serial.println(osc_length);
    
     }
     void remove(byte index) {
@@ -206,7 +215,10 @@ public:
         memmove(&data[index], &data[index+1], (osc_length - index - 1)*osc_size);
         osc_length--;
     }
-
+    void setSpeed(float speed){
+      if (speed)
+      this->speed = speed;
+    }
     void iterateAll(){
       next_cycle = ESP.getCycleCount();
       next_audio = ESP.getCycleCount();
@@ -227,6 +239,7 @@ public:
             idx->ctr-=0.001;//quarter note = 200
             if(idx->ctr <=0){
                 remove(i);
+
               return;
             }
           }
@@ -261,7 +274,10 @@ public:
       if (idx->pos >= wlen) idx->pos = 0;
         sigmaDeltaWrite(0, wpos[int(idx->pos)]);
     }
-
+    void setBPM(byte bpm){
+      if (bpm)
+      this->bpm = bpm;
+    }
 };
 //List l {.dcval=0,.length =0,.data={}};
 APU apu= APU(25);
@@ -291,27 +307,27 @@ void setup(){
 //l= APU(25);
   oscillator test = {
     .waveform = 1,
-    .pitch = apu.get_freq(E,1),
-    .ctr=2000,
+    .pitch = apu.get_freq(C,1),
+    .ctr=24,
     .pos = 0
   }; 
   oscillator eli = {
     .waveform = 1,
     .pitch = apu.get_freq(E,1),
-    .ctr=10000,
-    .pos = 0
+    .ctr=12,
+    .pos = 8
   }; 
   oscillator gre = {
     .waveform = 1,
     .pitch = apu.get_freq(G,1),
-    .ctr=5000,//1 beat
+    .ctr=6,//1 beat
     .pos = 0
   }; 
   Serial.begin(9600);
 //  Serial.print(0);
   apu.append(test);
-//  apu.append(eli);
-//  apu.append(gre);
+  apu.append(eli);
+  apu.append(gre);
 //  Serial.println(l.data[0].waveform);
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);

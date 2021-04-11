@@ -14,7 +14,6 @@
       //scale pitches to appropriate level
       //pitches are note_freq*1000*(1/audio_period);
       for (byte i = 0; i<cnt_notes(narr); i++){
-//        Serial.println(audio_period);
         narr[i]=  narr[i]*(float(note_offset)/float(audio_period));
       }
     }
@@ -43,9 +42,15 @@
       return narr[l_nt] * pow(2, oct);
     }
     void APU::append(oscillator item) {
-        if (osc_length < max_oscs){
-          data[osc_length++] = item;
-        }
+      // scale 4/beats to that of program cycle
+      // 1 bpm is approximately one sec
+      // scale 4/beats to that of program cycle
+      // 1 bpm is approximately 1 sec
+      item.ctr = (item.ctr)*cycle_period/float(bpm)*(this->speed);//
+      Serial.println(item.ctr);
+      if (osc_length < 8){
+        data[osc_length++] = item;
+      }
    
     }
     void APU::remove(byte index) {
@@ -102,6 +107,18 @@
       uint16_t wlen = wavedata[ idx->waveform].size;
       uint16_t* wpos = wavedata[ idx->waveform].wavedat;
       idx->pos+=idx->pitch;
+      //play pitch, which is basically how fast we iterate through a wave
+      //get location on waveform
       if (idx->pos >= wlen) idx->pos = 0;
         sigmaDeltaWrite(0, wpos[int(idx->pos)]);
     }
+    //modify APU params
+    void APU::setBPM(byte bpm){
+      if (bpm)
+      this->bpm = bpm;
+    }
+    void APU::setSpeed(float speed){
+      if (speed)
+      this->speed = speed;
+    }
+
