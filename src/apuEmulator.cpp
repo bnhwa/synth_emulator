@@ -27,7 +27,6 @@
     APU::APU(byte pin_use){
       mic_pin = pin_use;
       dcval = 0;
-      osc_length = 0;
       sigmaDeltaSetup(0, 88200);
       sigmaDeltaAttachPin(mic_pin, 0);
       sigmaDeltaWrite(0, 0);
@@ -160,4 +159,3 @@
     uint16_t APU::num_active_oscillators() {//get note frequency
       return this->active_oscs.osc_length;
     }
-

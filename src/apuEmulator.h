@@ -99,7 +99,6 @@ class APU {
     //note freq array for lowest octave; gets converted to that based on APU emulator audio period
     float narr[13] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14, 30.87,0 };
     float dcval = 0;//value to output to pin, combined/scaled vals of oscillators
-    uint16_t osc_length = 0;
     OscList active_oscs = OscList(max_oscs);
     OscList sn_data = OscList(max_notes_per_measure);
     // //stack 

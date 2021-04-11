@@ -20,7 +20,7 @@ void setup(){
     .waveform = 1,
     .pitch = apu.get_freq(E,1),
     .ctr=2,
-    .pos = 8
+    .pos = 0
   }; 
   oscillator gre = {
     .waveform = 1,
