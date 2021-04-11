@@ -54,14 +54,14 @@ void setup(){
     apu.add_oscillator_queue(1,C,1,2,3);
     apu.add_oscillator_queue(1,E,1,2,3);
     apu.add_oscillator_queue(1,G,1,2,3);
-    apu.add_oscillator_queue(1,C,2,2,3);
+//    apu.add_oscillator_queue(1,C,2,2,3);
 //  Serial.println(l.data[0].waveform);
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);
   
 //  initWaves();
 //  apu.setSpeed(0.5);
-  apu.setSpeed(8);
+//  apu.setSpeed(8);
   apu.iterateAll();
 }
 

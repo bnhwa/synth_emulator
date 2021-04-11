@@ -117,7 +117,7 @@
           for (byte i =0; i< sn_data.osc_length;i++){
             //update counter for enqueued oscillators
 			oscillator* idx = &sn_data.data[i];
-            idx->pos-=0.001;//*speed;
+            idx->pos-=0.005;//*speed;
             if(idx->pos <=0){
             	idx->pos=0;
             	active_oscs.append(sn_data.data[i]);
@@ -129,7 +129,7 @@
           for (byte i =0; i< active_oscs.osc_length;i++){
             //update counter for current oscillators
 			oscillator* idx = &active_oscs.data[i];
-            idx->ctr-=0.001;//*speed;
+            idx->ctr-=0.005;//*speed;
             if(idx->ctr <=0){
                 active_oscs.remove(i);
 
