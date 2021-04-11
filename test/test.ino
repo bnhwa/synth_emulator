@@ -10,29 +10,50 @@ void setup(){
 //  sigmaDeltaAttachPin(25, 0);
 //  sigmaDeltaWrite(0, 0);
 //l= APU(25);
+//  oscillator test = {
+//    .waveform = 1,
+//    .pitch = apu.get_freq(C,1),
+//    .ctr=4,
+//    .pos = 0
+//  }; 
+//  oscillator eli = {
+//    .waveform = 1,
+//    .pitch = apu.get_freq(E,1),
+//    .ctr=2,
+//    .pos = 0
+//  }; 
+//  oscillator gre = {
+//    .waveform = 1,
+//    .pitch = apu.get_freq(G,1),
+//    .ctr=1,//1 beat
+//    .pos = 0
+//  }; 
   oscillator test = {
     .waveform = 1,
     .pitch = apu.get_freq(C,1),
-    .ctr=4,
-    .pos = 0
+    .ctr=1,
+    .pos = 1
   }; 
   oscillator eli = {
     .waveform = 1,
     .pitch = apu.get_freq(E,1),
-    .ctr=2,
-    .pos = 0
+    .ctr=1,
+    .pos = 2
   }; 
   oscillator gre = {
     .waveform = 1,
     .pitch = apu.get_freq(G,1),
     .ctr=1,//1 beat
-    .pos = 0
+    .pos = 3
   }; 
   Serial.begin(9600);
 //  Serial.print(0);
-    apu.append(test);
-  apu.append(eli);
-  apu.append(gre);
+//    apu.append(test);
+//  apu.append(eli);
+//  apu.append(gre);
+    apu.add_oscillator_queue(test);
+  apu.add_oscillator_queue(eli);
+  apu.add_oscillator_queue(gre);
 //  Serial.println(l.data[0].waveform);
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);

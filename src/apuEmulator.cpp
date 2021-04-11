@@ -9,6 +9,11 @@
       // 1 bpm is approximately 1 sec
       //length in cycles
       item.ctr = (item.ctr)*cycles_per_measure/float(bpm)*speed;//
+      if (item.pos!=0){
+      	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
+      	// Serial.println("asddd");
+      	// Serial.println(item.pos);
+      }
       append(item);
     }
 	void OscList::append(oscillator item){
@@ -85,7 +90,7 @@
       next_cycle = ESP.getCycleCount();
       next_audio = ESP.getCycleCount();
 
-      while (active_oscs.osc_length>0){
+      while ((active_oscs.osc_length+sn_data.osc_length)>0){
         uint32_t t_now = ESP.getCycleCount();
         if (t_last > t_now) {
           next_cycle = t_now;
@@ -100,12 +105,26 @@
             cpu_cycles = 0;
           }
           next_cycle += cycle_period;
+          //queued
+          for (byte i =0; i< sn_data.osc_length;i++){
+            //update counter for current oscillators
+			oscillator* idx = &sn_data.data[i];
+            idx->pos-=0.001;//*speed;
+            if(idx->pos <=0){
+            	idx->pos=0;
+            	active_oscs.append(sn_data.data[i]);
+                sn_data.remove(i);
+                
+            }
+          }
+          //active
           for (byte i =0; i< active_oscs.osc_length;i++){
             //update counter for current oscillators
 			oscillator* idx = &active_oscs.data[i];
             idx->ctr-=0.001;//*speed;
             if(idx->ctr <=0){
                 remove(i);
+
             }
           }
 
