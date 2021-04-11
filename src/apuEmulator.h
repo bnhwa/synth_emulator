@@ -67,7 +67,6 @@ class APU {
     uint32_t next_cycle = 0;
     uint32_t cpu_cycles = 0;//4000 cycles by default = 1 measure
     uint32_t cycles_per_measure = def_cycles_per_measure;
-    uint32_t measure_cycles = 0;
     uint32_t measure_count = 0;//measure by measure, 
     uint32_t t_last = 0;
     const uint8_t audio_divisor = 2;

@@ -73,10 +73,11 @@
     
         if (t_now >= next_cycle) {
           //clock audio processing unit
-          // if (measure_cycles>=4000){
-          //   measure_count+=1;
-          //   Serial.println("inc");
-          // }
+          if (cpu_cycles>=cycles_per_measure){
+          	//increment measure
+            measure_count+=1;
+            cpu_cycles = 0;
+          }
           next_cycle += cycle_period;
           for (byte i =0; i<osc_length;i++){
             //update counter for current oscillators
@@ -126,11 +127,10 @@
     	//set zero = reset
       if (speed>0){
       	this->speed = speed;
-      	measure_cycles = measure_cycles*speed;
-      	// Serial.println(measure_cycles);
+      	cycles_per_measure = def_cycles_per_measure*speed;
   	  }else{
   	  	this->speed = 1;
-  	  	measure_cycles = def_cycles_per_measure;
+  	  	cycles_per_measure = def_cycles_per_measure;
   	  }
     }
     uint16_t APU::num_active_oscillators() {//get note frequency

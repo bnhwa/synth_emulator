@@ -38,8 +38,8 @@ void setup(){
 //  Serial.println(l.data[0].waveform);
   
 //  initWaves();
-//  apu.setSpeed(0.5);
-//  apu.setSpeed(2);
+  apu.setSpeed(0.5);
+  apu.setSpeed(2);
   apu.iterateAll();
 }
 
