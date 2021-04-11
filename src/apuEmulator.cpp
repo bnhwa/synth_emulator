@@ -79,7 +79,6 @@
             idx->ctr-=0.001;//quarter note = 200
             if(idx->ctr <=0){
                 remove(i);
-              return;
             }
           }
           apu_cycles += 2;

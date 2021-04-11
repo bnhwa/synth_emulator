@@ -239,8 +239,6 @@ public:
             idx->ctr-=0.001;//quarter note = 200
             if(idx->ctr <=0){
                 remove(i);
-
-              return;
             }
           }
           apu_cycles += 2;
@@ -312,7 +310,7 @@ void setup(){
     .pos = 0
   }; 
   oscillator eli = {
-    .waveform = 1,
+    .waveform = 1d,
     .pitch = apu.get_freq(E,1),
     .ctr=12,
     .pos = 8

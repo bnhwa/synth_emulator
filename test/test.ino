@@ -51,6 +51,6 @@ void loop(){
 //  delay(1);
 
 //  l.iterateAll();
-  Serial.println(apu.narr[0]);
+//  Serial.println(apu.narr[0]);
   delay(1000);
 }
