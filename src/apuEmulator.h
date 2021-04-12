@@ -32,7 +32,7 @@ struct oscillator{
   float pitch;
   uint16_t ctr;// if memory isnt important, change it to float ctr; uint16_t makes max note length 16 measures
   float pos;//if memory isnt important, change it to float pos;
-  uint16_t tot;//original note length; we store this because its needed for ADSR,
+  uint16_t max_cnt;//original note length; we store this because its needed for ADSR,
   //when inactive, pos is used to count down till oscillator is played and appended on active stack
   //when active, used to track waveform position 
 };
@@ -47,8 +47,9 @@ class ADSR{
     float sustain;
     float sustain_level = 0.5;
     float release = 0.2;
+    float adsr_tot = attack+decay+sustain+release;
     ADSR();
-    float getADSR(float pos, float maxpos);
+    float getADSR(uint16_t cnt, uint16_t max_cnt);
 
 
 };
@@ -96,7 +97,7 @@ class APU {
     const uint32_t cycle_period = F_CPU / APU_FREQ;
     const uint16_t audio_rate = 44100;
     const uint32_t audio_period = F_CPU / audio_rate;//5442
-    const uint32_t note_offset = 1000;//1000 for esp32
+    const uint32_t note_offset = 250;//1000 for esp32
     const uint32_t def_cycles_per_measure = 4000;
     uint32_t next_audio = 0;
     uint32_t next_cycle = 0;

@@ -190,7 +190,27 @@
 
     //ADSR
     ADSR::ADSR(){}
-    float getADSR(float pos, float maxpos){
-    	float currpos = pos/maxpos;
-    	return 0.0;
+    float getADSR(uint16_t cnt, uint16_t max_cnt){
+      //we should have: attack+decay+sustain = 1.0
+
+      //a =0->d
+    	// float currpos = float(cnt)/float(max_cnt);//
+     //  float dsr = adsr_tot-attack;
+    	// return 0.0;//attack = cnt-(attack+sustain+decay)* max_cnt
+     //  if (currpos>= dsr){
+     //    //attack
+     //    return (adsr_tot-currpos)*(1/attack);
+     //  }else if (currpos>=dsr-decay){
+     //    //decay assume it highaf
+     //    return (decay-(currpos-sustain-release))*((1-sustain_level)/decay);
+     //    //slope ((1-sustain_level)/decay)
+     //  }else if (){
+     //    //sustain
+     //    return (1-sustain_level);//flat
+     //  }else{
+     //    //release0.2-0.2
+     //    return (currpos)*((1-sustain_level)/release);
+
+     //  }
+      return 0.0;
     }
