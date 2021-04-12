@@ -8,10 +8,10 @@
       // scale 4/beats to that of program cycle
       // 1 bpm is approximately 1 sec
       //length in cycles
-      item.ctr = (item.ctr)*cycles_per_measure/float(bpm)*speed;//
+      item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
       if (item.pos!=0){
       	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
-      	// Serial.println(item.pos);
+      	Serial.println(item.pos);
       }
       append(item);
     }
@@ -30,7 +30,6 @@
 	//APU
     APU::APU(byte pin_use){
       mic_pin = pin_use;
-      dcval = 0;
       sigmaDeltaSetup(0, 88200);
       sigmaDeltaAttachPin(mic_pin, 0);
       sigmaDeltaWrite(0, 0);
@@ -73,7 +72,8 @@
     		waveform,
     		get_freq(pitch,octave),
     		note_len,
-    		pos
+    		pos,
+    		note_len
     	};
     	sn_data.add_note(tmp,cycles_per_measure,(this->speed),bpm);
     }
@@ -114,10 +114,11 @@
           }
           next_cycle += cycle_period;
           //queued
+          bool iterate = ((cpu_cycles % 200)==0);
           for (byte i =0; i< sn_data.osc_length;i++){
             //update counter for enqueued oscillators
 			oscillator* idx = &sn_data.data[i];
-            idx->pos-=0.005;//*speed;
+			if (iterate) idx->pos-=1;
             if(idx->pos <=0){
             	idx->pos=0;
             	active_oscs.append(sn_data.data[i]);
@@ -129,7 +130,7 @@
           for (byte i =0; i< active_oscs.osc_length;i++){
             //update counter for current oscillators
 			oscillator* idx = &active_oscs.data[i];
-            idx->ctr-=0.005;//*speed;
+			if (iterate) idx->ctr-=1;
             if(idx->ctr <=0){
                 active_oscs.remove(i);
 
@@ -185,4 +186,11 @@
     }
     uint16_t APU::num_active_oscillators() {//get note frequency
       return this->active_oscs.osc_length;
+    }
+
+    //ADSR
+    ADSR::ADSR(){}
+    float getADSR(float pos, float maxpos){
+    	float currpos = pos/maxpos;
+    	return 0.0;
     }

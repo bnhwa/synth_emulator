@@ -30,12 +30,29 @@ struct oscillator{
   //cuz potential variable lengths of waveforms
   uint16_t waveform;
   float pitch;
-  float ctr;
-  float pos;
+  uint16_t ctr;// if memory isnt important, change it to float ctr; uint16_t makes max note length 16 measures
+  float pos;//if memory isnt important, change it to float pos;
+  uint16_t tot;//original note length; we store this because its needed for ADSR,
   //when inactive, pos is used to count down till oscillator is played and appended on active stack
   //when active, used to track waveform position 
 };
 #define osc_size sizeof(oscillator)
+//=========================================
+//ADSR Envelope waveform
+//=========================================
+class ADSR{
+  public:
+    float attack = 0.1;
+    float decay = 0.1;
+    float sustain;
+    float sustain_level = 0.5;
+    float release = 0.2;
+    ADSR();
+    float getADSR(float pos, float maxpos);
+
+
+};
+
 //=========================================
 //Polytonic Audio Processing Unit
 //=========================================
@@ -75,7 +92,7 @@ class APU {
     uint16_t num_active_oscillators(); 
 	private:
     //APU Vars
-    const uint32_t APU_FREQ =  1789773 / 2 / 2; // APU is half speed of NES CPU
+    const uint32_t APU_FREQ =  1789773 / 2 / 2;
     const uint32_t cycle_period = F_CPU / APU_FREQ;
     const uint16_t audio_rate = 44100;
     const uint32_t audio_period = F_CPU / audio_rate;//5442
@@ -91,16 +108,8 @@ class APU {
     uint8_t audio_counter = 0;
     //note freq array for lowest octave; gets converted to that based on APU emulator audio period
     float narr[13] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14, 30.87,0 };
-    float dcval = 0;//value to output to pin, combined/scaled vals of oscillators
     OscList active_oscs = OscList(max_oscs);
     OscList sn_data = OscList(max_notes_per_measure);
-    // //stack 
-    // oscillator data[max_oscs];
-    // //song notes temp stack
-    
-    // oscillator sn_data[max_notes_per_measure];
-    //synth/song params
-
     byte bpm = 4;
     float speed=1;
     uint16_t SineValues[256];//set beats per measure, default 4/4
