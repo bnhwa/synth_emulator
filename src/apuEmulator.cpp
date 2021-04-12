@@ -9,6 +9,10 @@
       // 1 bpm is approximately 1 sec
       //length in cycles
       item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+      item.max_cnt = item.ctr;
+      //if use adsr, add
+
+
       if (item.pos!=0){
       	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
       	Serial.println(item.pos);
@@ -97,7 +101,11 @@
     void APU::iterateAll(){
       next_cycle = ESP.getCycleCount();
       next_audio = ESP.getCycleCount();
-
+      // oscillator* xx = &sn_data.data[0];
+      // Serial.println(adsr.getADSR(5,xx->max_cnt));
+      // Serial.println("cnt");
+      // Serial.println(xx->max_cnt);
+      // Serial.println("asdfasdfasdf");
       while ((active_oscs.osc_length+sn_data.osc_length)>0){
         uint32_t t_now = ESP.getCycleCount();
         if (t_last > t_now) {
@@ -165,7 +173,11 @@
       //play pitch, which is basically how fast we iterate through a wave
       //get location on waveform
       if (idx->pos >= wlen) idx->pos = 0;
+      if (use_adsr){
+        sigmaDeltaWrite(0, adsr.getADSR(idx->ctr,idx->max_cnt)*wpos[int(idx->pos)]);
+      }else{
         sigmaDeltaWrite(0, wpos[int(idx->pos)]);
+      }
     }
    
 
@@ -189,28 +201,74 @@
     }
 
     //ADSR
-    ADSR::ADSR(){}
-    float getADSR(uint16_t cnt, uint16_t max_cnt){
-      //we should have: attack+decay+sustain = 1.0
-
-      //a =0->d
-    	// float currpos = float(cnt)/float(max_cnt);//
-     //  float dsr = adsr_tot-attack;
-    	// return 0.0;//attack = cnt-(attack+sustain+decay)* max_cnt
-     //  if (currpos>= dsr){
-     //    //attack
-     //    return (adsr_tot-currpos)*(1/attack);
-     //  }else if (currpos>=dsr-decay){
-     //    //decay assume it highaf
-     //    return (decay-(currpos-sustain-release))*((1-sustain_level)/decay);
-     //    //slope ((1-sustain_level)/decay)
-     //  }else if (){
-     //    //sustain
-     //    return (1-sustain_level);//flat
-     //  }else{
-     //    //release0.2-0.2
-     //    return (currpos)*((1-sustain_level)/release);
-
-     //  }
-      return 0.0;
+    ADSR::ADSR(){
+      sustain_level = 1-sustain_level;
+      recalibrate();
+    }
+    void ADSR::recalibrate(){
+      if (attack+decay+sustain<1){
+        //add to attack,  sustain, release if things are all zeroed, 
+        float recalibrate = (1-(attack+decay+sustain))/3;
+        attack+=recalibrate;
+        sustain+=recalibrate;
+        release+=recalibrate;
+      }
+      dSlope=((maxAttack-sustain_level)/decay);
+      dsr = attack+sustain+release;
+      sr = sustain+release;
+      
+      //recount adsr_total
+      if (decay==0){
+        dsr = sr;
+        aSlope = (sustain_level/(attack));
+      }else{
+        aSlope = (maxAttack/attack);
+      }
+      if (sustain==0){
+        dsr-=attack;
+        sr-=sustain;
+        aSlope = (sustain_level/attack);
+      }else{
+      }
+      adsr_tot = attack+decay+sustain+release;
+    }
+    void ADSR::setAttack(float a, float m){
+      attack = a;
+      maxAttack = m;
+      recalibrate();
+    }
+    void ADSR::setDecay(float d){
+      decay = d;
+      recalibrate();
+    }
+    void ADSR::setSustain(float s, float s_lev){
+      sustain = s;
+      setSustainLevel(s_lev);
+      recalibrate();
+      
+    }
+    void ADSR::setSustainLevel(float s_lev){
+      if (s_lev<=1.0) sustain_level = 1-s_lev;
+    }
+    void ADSR::setRelease(float r){
+      release = r;
+      recalibrate();
+    }
+     
+    
+    float ADSR::getADSR(uint16_t cnt, uint16_t max_cnt){
+       float currpos = float(cnt)/float(max_cnt);//
+       float diff = adsr_tot-attack;
+       if ((attack>0) && (currpos>= diff)){
+         return (attack-(currpos-dsr))*aSlope;
+       }else if ((decay>0) && (currpos>=(diff-=decay))){
+         //decay assume it highaf
+         return ((currpos-sr))*dSlope+sustain_level;
+         //slope ((1-sustain_level)/decay)
+       }else if ((sustain>0) && (currpos>=(diff-=sustain))){
+         //sustain
+         return (sustain_level);//flat
+       }else{
+         return (currpos)*(sustain_level/release);
+       }
     }

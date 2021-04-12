@@ -29,7 +29,7 @@ void setup(){
     apu.add_oscillator_queue(CS,2,3,13,1);
     apu.add_oscillator_queue(A,2,18,14,1);
     apu.add_oscillator_queue(GS,2,18,16,1);
-    apu.add_oscillator_queue(CS,2,18,19,1);
+    apu.add_oscillator_queue(CS,2,18,18,1);
 
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);

@@ -41,16 +41,30 @@ struct oscillator{
 //ADSR Envelope waveform
 //=========================================
 class ADSR{
-  public:
-    float attack = 0.1;
-    float decay = 0.1;
-    float sustain;
-    float sustain_level = 0.5;
-    float release = 0.2;
-    float adsr_tot = attack+decay+sustain+release;
-    ADSR();
-    float getADSR(uint16_t cnt, uint16_t max_cnt);
-
+    public:
+        ADSR();
+        float getADSR(uint16_t cnt, uint16_t max_cnt);
+        void setAttack(float a, float m);
+        void setDecay(float d);
+        void setSustain(float s, float s_lev);
+        void setSustainLevel(float s_lev);
+        void setRelease(float r);
+    private:
+        //depending on memory considerations, use uints and float casting,
+        //but sound is not as smooth
+        float attack = 0.2;
+        float maxAttack = 1.0;
+        float decay = 0.2;
+        float sustain = 0.6;
+        float sustain_level = 0.0;
+        float release = 0.1;
+        float adsr_tot = attack+decay+sustain+release;
+        float dsr = 0;
+        float sr = 0;
+        
+        float aSlope=0;
+        float dSlope = 0;
+        void recalibrate();
 
 };
 
@@ -76,13 +90,14 @@ class APU {
     uint16_t mic_pin;
 	  //vars
     bool playing = true;
+    bool use_adsr = true;
     APU(byte pin_use);
     float getNote(byte n);
     float get_freq(byte l_nt,byte oct);
     void append(oscillator item);//direct append to play
     void remove(byte index);//remove directly
     void iterateAll();
-	  void playAudio(byte index);
+	void playAudio(byte index);
     //change/get APU Params
     void setBPM(byte bpm);
     void setSpeed(float speed);
@@ -122,6 +137,9 @@ class APU {
       {SineValues,cnt_notes(SineValues)},
       {SawValues,cnt_notes(SawValues)}
     };
+    //ADSR envelope generator
+    ADSR adsr = ADSR();
+    
 
 
 };

@@ -10,11 +10,11 @@ Real-time speed adjustment,
 
 Complex note scheduling--the sky is the limit
 
-
+ADSR Envelopes/ structuring
 
 ### TODO:
 
-Add ADSR Envelope
+minor bug fixes when ADSR sustain is zero
 
 
 
