@@ -85,7 +85,7 @@ class APU {
     //change/get APU Params
     void setBPM(byte bpm);
     void setSpeed(float speed);
-    void add_oscillator_queue(uint16_t waveform, uint16_t pitch, uint8_t octave, float note_len,float pos);
+    void add_oscillator_queue(uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform);
     // void add_oscillator_queue(oscillator item);//add to measure stack
     // void add_oscillator_queue(oscillator item);
     //void add_measure_notes(song_notes sn);

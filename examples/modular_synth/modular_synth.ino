@@ -48,13 +48,13 @@ void setup(){
   }; 
   Serial.begin(9600);
   //waveform,note,octave,note_len,note_pos within measure
-    apu.add_oscillator_queue(1,C,1,1,0);
-    apu.add_oscillator_queue(1,E,1,1,1);
-    apu.add_oscillator_queue(1,G,1,1,2);
-    apu.add_oscillator_queue(1,C,1,2,3);
-    apu.add_oscillator_queue(1,E,1,2,3);
-    apu.add_oscillator_queue(1,G,1,2,3);
-    apu.add_oscillator_queue(1,C,2,2,3);
+    apu.add_oscillator_queue(C,1,1,0,1);
+    apu.add_oscillator_queue(E,1,1,1,1);
+    apu.add_oscillator_queue(G,1,1,2,1);
+    apu.add_oscillator_queue(C,1,2,3,1);
+    apu.add_oscillator_queue(E,1,2,3,1);
+    apu.add_oscillator_queue(G,1,2,3,1);
+    apu.add_oscillator_queue(C,2,2,3,1);
 //  Serial.println(l.data[0].waveform);
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);

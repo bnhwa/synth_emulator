@@ -67,7 +67,7 @@
     float APU::get_freq(byte l_nt,byte oct) {//get note frequency
     	return narr[l_nt] * pow(2, oct);
     }
-    void APU::add_oscillator_queue(uint16_t waveform, uint16_t pitch, uint8_t octave, float note_len,float pos){
+    void APU::add_oscillator_queue( uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform){
     	oscillator tmp = {
     		waveform,
     		get_freq(pitch,octave),
