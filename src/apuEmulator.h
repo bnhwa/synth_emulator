@@ -3,7 +3,8 @@
 
 #include "arduino.h"
 #define max_oscs 10 //max number of oscillators
-#define max_notes_per_measure 64 //max notes per measure
+#define max_notes_queue 256 //max notes in queue
+//TODO, for mem purposes encode/decode note input as bytes
 //=========================================
 // wave stuff
 //=========================================
@@ -75,15 +76,16 @@ class ADSR{
 //=========================================
 //Measure "stack"
 //String "AS5_pos_length"
-class OscList{//max of 150 notes per measure, waveform, duration, change that to float
+class OscList{
   public:
     OscList(uint16_t limit);
     uint16_t osc_length = 0;
     uint16_t limit;
-    oscillator data[max_notes_per_measure];
+    oscillator data[max_notes_queue];
     void add_note(oscillator item, byte bpm );
     void append(oscillator item);
     void remove(byte index);
+
 };
 //APU
 class APU {
@@ -103,10 +105,7 @@ class APU {
     //change/get APU Params
     void setBPM(byte bpm);
     void setSpeed(float speed);
-    void add_oscillator_queue(uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform);
-    // void add_oscillator_queue(oscillator item);//add to measure stack
-    // void add_oscillator_queue(oscillator item);
-    //void add_measure_notes(song_notes sn);
+    void add_note_queue(uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform);
     uint16_t num_active_oscillators(); 
 	private:
     //APU Vars
@@ -129,7 +128,7 @@ class APU {
     //note freq array for lowest octave; gets converted to that based on APU emulator audio period
     float narr[13] = {16.35, 17.32, 18.35, 19.45, 20.60, 21.83, 23.12, 24.50, 25.96, 27.50, 29.14, 30.87,0 };
     OscList active_oscs = OscList(max_oscs);
-    OscList sn_data = OscList(max_notes_per_measure);
+    OscList sn_data = OscList(max_notes_queue);
     byte bpm = 4;
     float speed=1;
     uint16_t SineValues[256];//set beats per measure, default 4/4

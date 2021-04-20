@@ -16,6 +16,8 @@ ADSR Envelopes/ structuring
 
 minor bug fixes when ADSR sustain is zero
 
+Perhaps add compression for notes
+
 
 
 

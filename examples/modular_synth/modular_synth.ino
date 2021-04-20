@@ -1,67 +1,57 @@
 #include <apuEmulator.h>
 #include <notes.h>
 
-
+//set DAC voltage out pin
 APU apu= APU(25);
 
+
+
 void setup(){
-  //500 frames
-//  sigmaDeltaSetup(0, 88200);
-//  sigmaDeltaAttachPin(25, 0);
-//  sigmaDeltaWrite(0, 0);
-//l= APU(25);
-//  oscillator test = {
-//    .waveform = 1,
-//    .pitch = apu.get_freq(C,1),
-//    .ctr=4,
-//    .pos = 0
-//  }; 
-//  oscillator eli = {
-//    .waveform = 1,
-//    .pitch = apu.get_freq(E,1),
-//    .ctr=2,
-//    .pos = 0
-//  }; 
-//  oscillator gre = {
-//    .waveform = 1,
-//    .pitch = apu.get_freq(G,1),
-//    .ctr=1,//1 beat
-//    .pos = 0
-//  }; 
-  oscillator test = {
-    .waveform = 1,
-    .pitch = apu.get_freq(C,1),
-    .ctr=1,
-    .pos = 1
-  }; 
-  oscillator eli = {
-    .waveform = 1,
-    .pitch = apu.get_freq(E,1),
-    .ctr=1,
-    .pos = 2
-  }; 
-  oscillator gre = {
-    .waveform = 1,
-    .pitch = apu.get_freq(G,1),
-    .ctr=1,//1 beat
-    .pos = 3
-  }; 
+
   Serial.begin(9600);
-  //waveform,note,octave,note_len,note_pos within measure
-    apu.add_oscillator_queue(C,1,1,0,1);
-    apu.add_oscillator_queue(E,1,1,1,1);
-    apu.add_oscillator_queue(G,1,1,2,1);
-    apu.add_oscillator_queue(C,1,2,3,1);
-    apu.add_oscillator_queue(E,1,2,3,1);
-    apu.add_oscillator_queue(G,1,2,3,1);
-    apu.add_oscillator_queue(C,2,2,3,1);
-//  Serial.println(l.data[0].waveform);
+//  //note,octave,note_len,note_pos,waveform within measure
+
+    apu.add_note_queue(C,2,1,  1, 0);
+    apu.add_note_queue(DS,2,1,   2, 0);
+    apu.add_note_queue(GS,2,1,  3,0);
+    apu.add_note_queue(C,3,1,    4,0);
+    apu.add_note_queue(GS,2,1,  5,0);
+    apu.add_note_queue(DS,2,1,   6, 0);
+    apu.add_note_queue(C,2,1,  6+1, 0);
+    apu.add_note_queue(DS,2,1,   6+2, 0);
+    apu.add_note_queue(GS,2,1,  6+3,0);
+    apu.add_note_queue(C,3,1,    6+4,0);
+    apu.add_note_queue(GS,2,1,  6+5,0);
+    apu.add_note_queue(DS,2,1,   6+6, 0);
+
+    apu.add_note_queue(C,2,1,  12+1, 0);
+    apu.add_note_queue(E,2,1,   12+2, 0);
+    apu.add_note_queue(AS,2,1,  12+3,0);
+    apu.add_note_queue(C,3,1,    12+4,0);
+    apu.add_note_queue(AS,2,1,  12+5,0);
+    apu.add_note_queue(E,2,1,   12+6, 0);
+    
+    apu.add_note_queue(C,2,1,  18+1, 0);
+    apu.add_note_queue(E,2,1,   18+2, 0);
+    apu.add_note_queue(AS,2,1,  18+3,0);
+    apu.add_note_queue(C,3,1,    18+4,0);
+    apu.add_note_queue(AS,2,1,  18+5,0);
+    apu.add_note_queue(E,2,1,   18+6, 0);
+
+
+//    apu.add_note_queue(C,3,0.5,  3+0, 1);
+//    apu.add_note_queue(DS,3,0.5,   3+0.5, 1);
+//    apu.add_note_queue(GS,3,0.5,  3+1,1);
+//    apu.add_note_queue(C,4,0.5,    3+1.5,1);
+//    apu.add_note_queue(DS,3,0.5,   3+2, 1);
+//    apu.add_note_queue(GS,3,0.5,  3+2.5,1);
+    
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);
   
 //  initWaves();
-//  apu.setSpeed(0.5);
-  apu.setSpeed(8);
+//  apu.setSpeed(0.25);
+//  apu.setSpeed(8);
   apu.iterateAll();
 }
 

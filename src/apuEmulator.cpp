@@ -5,18 +5,8 @@
 	}
 
     void OscList::add_note(oscillator item, byte bpm) {
-      // scale 4/beats to that of program cycle
-      // 1 bpm is approximately 1 sec
-      //length in cycles
-      // item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
-      // item.max_cnt = item.ctr;
-      // //if use adsr, add
+      // scale beats to that of program cycle, default 4/4 time
       item.pos = item.pos/float(bpm);
-
-      // if (item.pos!=0){
-      // 	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
-      // 	Serial.println(item.pos);
-      // }
       append(item);
     }
 	void OscList::append(oscillator item){
@@ -71,7 +61,7 @@
     float APU::get_freq(byte l_nt,byte oct) {//get note frequency
     	return narr[l_nt] * pow(2, oct);
     }
-    void APU::add_oscillator_queue( uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform){
+    void APU::add_note_queue( uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform){
     	oscillator tmp = {
     		waveform,
     		get_freq(pitch,octave),
@@ -81,17 +71,11 @@
     	};
     	sn_data.add_note(tmp,bpm);
     }
-    // void APU::add_oscillator_queue(oscillator item){
-    // 	//add to measure queue
-    // 	sn_data.add_note(item,cycles_per_measure,(this->speed),bpm);
-    // }
     void APU::append(oscillator item) {
-      	//append oscillaror directly to be played, raw
-      	// scale 4/beats to that of program cycle
-      	// 1 bpm is approximately 1 sec
-      	//length in cycles
+      	//append oscillaror directly to be played,
         item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
         item.max_cnt = item.ctr;
+        item.pos = 0;
         //if use adsr, add
         if (item.pos!=0){
          item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
@@ -102,18 +86,14 @@
    
     }
     void APU::remove(byte index) {
-    	//remove active oscillator directly 
+    	//remove active oscillator directly
+      // if (index <=(this->active_oscs.osc_length   ))
         this->active_oscs.remove(index);
     }
 
     void APU::iterateAll(){
       next_cycle = ESP.getCycleCount();
       next_audio = ESP.getCycleCount();
-      // oscillator* xx = &sn_data.data[0];
-      // Serial.println(adsr.getADSR(5,xx->max_cnt));
-      // Serial.println("cnt");
-      // Serial.println(xx->max_cnt);
-      // Serial.println("asdfasdfasdf");
       while ((active_oscs.osc_length+sn_data.osc_length)>0){
         uint32_t t_now = ESP.getCycleCount();
         if (t_last > t_now) {
@@ -128,8 +108,9 @@
             measure_count+=1;
             measure_subcount=0;
           }
+
           next_cycle += cycle_period;
-          //queued
+
           bool iterate = ((cpu_cycles % 200)==0);
           if (iterate){
             //presorted note queue
@@ -139,12 +120,11 @@
               //assume song notes are fed in order
               oscillator* idx = &sn_data.data[0];
               if ((idx->pos)> m_pos){
-                //break if 4>0
+                //break if next note is further along the measure
                 break;
               }else{
 
                 //mult pos for both, and append to stack
-                // idx->pos-=m_pos;//minus whatever incrementer
                 idx->ctr = uint16_t((float(idx->ctr)*float(cycles_per_measure)/float(bpm)*speed));//
                 idx->max_cnt = idx->ctr;
                 idx->ctr+=idx->max_cnt*adsr.getRelease();
@@ -214,7 +194,7 @@
     void APU::setSpeed(float speed){
     	//set zero = reset
       if (speed>0){
-      	this->speed = speed;
+      	this->speed = 1/speed;
       	cycles_per_measure = def_cycles_per_measure*speed;
   	  }else{
   	  	this->speed = 1;
