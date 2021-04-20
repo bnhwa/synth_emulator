@@ -4,33 +4,80 @@
 
 APU apu= APU(25);
 
+
+
 void setup(){
 
   Serial.begin(9600);
-  //waveform,note,octave,note_len,note_pos within measure
-   
-    apu.add_oscillator_queue(C,3,2,0,1);//apu.add_oscillator_queue(C,3,4,0,0);
-    apu.add_oscillator_queue(E,3,2,0,0);
-    apu.add_oscillator_queue(G,3,2,0,0);
-//    apu.add_oscillator_queue(C,4,2,0,1);
-//    apu.add_oscillator_queue(C,3,2,0,1);
-    apu.add_oscillator_queue(D,3,1,2,1);
-    apu.add_oscillator_queue(E,3,1,3,1);
-    apu.add_oscillator_queue(F,3,2,4,1);apu.add_oscillator_queue(C,3,2,4,1);apu.add_oscillator_queue(GS,3,2,4,1);
-    apu.add_oscillator_queue(G,3,1,5,1);
-    apu.add_oscillator_queue(F,3,1,6,1);
-    apu.add_oscillator_queue(A,3,2,7,1);
-    
-    apu.add_oscillator_queue(GS,3,3,8,1);//apu.add_oscillator_queue(CS,3,3,8,0);
-    apu.add_oscillator_queue(E,3,3,9,1);
-    apu.add_oscillator_queue(CS,3,3,10,1);
-    apu.add_oscillator_queue(A,2,3,11,1);
-    apu.add_oscillator_queue(E,2,3,12,1);
-    apu.add_oscillator_queue(CS,2,3,13,1);
-    apu.add_oscillator_queue(A,2,18,14,1);
-    apu.add_oscillator_queue(GS,2,18,16,1);
-    apu.add_oscillator_queue(CS,2,18,18,1);
+//  //note,octave,note_len,note_pos,waveform within measure
+//   
+//    apu.add_oscillator_queue(C,3,2,0,1);//apu.add_oscillator_queue(C,3,4,0,0);
+//    apu.add_oscillator_queue(E,3,2,0,1);
+//    apu.add_oscillator_queue(G,3,2,0,1);
+////    apu.add_oscillator_queue(C,4,2,0,1);
+////    apu.add_oscillator_queue(C,3,2,0,1);
+//    apu.add_oscillator_queue(D,3,1,2,1);
+//    apu.add_oscillator_queue(E,3,1,3,1);
+//    apu.add_oscillator_queue(F,3,2,4,1);apu.add_oscillator_queue(C,3,2,4,1);apu.add_oscillator_queue(GS,3,2,4,1);
+//    apu.add_oscillator_queue(G,3,1,5,1);
+//    apu.add_oscillator_queue(F,3,1,6,1);
+//    apu.add_oscillator_queue(A,3,2,7,1);
+//    
+//    apu.add_oscillator_queue(GS,3,3,8,1);//apu.add_oscillator_queue(CS,3,3,8,0);
+//    apu.add_oscillator_queue(E,3,3,9,1);
+//    apu.add_oscillator_queue(CS,3,3,10,1);
+//    apu.add_oscillator_queue(A,2,3,11,1);
+//    apu.add_oscillator_queue(E,2,3,12,1);
+//    apu.add_oscillator_queue(CS,2,3,13,1);
+//    apu.add_oscillator_queue(A,2,18,14,1);
+//    apu.add_oscillator_queue(GS,2,18,16,1);
+//    apu.add_oscillator_queue(CS,2,18,18,1);
+//
+//
+//
+//
+//
+//
+//
 
+//
+//
+//
+    apu.add_oscillator_queue(C,2,1,  1, 0);
+    apu.add_oscillator_queue(DS,2,1,   2, 0);
+    apu.add_oscillator_queue(GS,2,1,  3,0);
+    apu.add_oscillator_queue(C,3,1,    4,0);
+    apu.add_oscillator_queue(GS,2,1,  5,0);
+    apu.add_oscillator_queue(DS,2,1,   6, 0);
+    apu.add_oscillator_queue(C,2,1,  6+1, 0);
+    apu.add_oscillator_queue(DS,2,1,   6+2, 0);
+    apu.add_oscillator_queue(GS,2,1,  6+3,0);
+    apu.add_oscillator_queue(C,3,1,    6+4,0);
+    apu.add_oscillator_queue(GS,2,1,  6+5,0);
+    apu.add_oscillator_queue(DS,2,1,   6+6, 0);
+
+    apu.add_oscillator_queue(C,2,1,  12+1, 0);
+    apu.add_oscillator_queue(E,2,1,   12+2, 0);
+    apu.add_oscillator_queue(AS,2,1,  12+3,0);
+    apu.add_oscillator_queue(C,3,1,    12+4,0);
+    apu.add_oscillator_queue(AS,2,1,  12+5,0);
+    apu.add_oscillator_queue(E,2,1,   12+6, 0);
+    
+    apu.add_oscillator_queue(C,2,1,  18+1, 0);
+    apu.add_oscillator_queue(E,2,1,   18+2, 0);
+    apu.add_oscillator_queue(AS,2,1,  18+3,0);
+    apu.add_oscillator_queue(C,3,1,    18+4,0);
+    apu.add_oscillator_queue(AS,2,1,  18+5,0);
+    apu.add_oscillator_queue(E,2,1,   18+6, 0);
+
+
+//    apu.add_oscillator_queue(C,3,0.5,  3+0, 1);
+//    apu.add_oscillator_queue(DS,3,0.5,   3+0.5, 1);
+//    apu.add_oscillator_queue(GS,3,0.5,  3+1,1);
+//    apu.add_oscillator_queue(C,4,0.5,    3+1.5,1);
+//    apu.add_oscillator_queue(DS,3,0.5,   3+2, 1);
+//    apu.add_oscillator_queue(GS,3,0.5,  3+2.5,1);
+    
 //  apu.remove(0);
 //  Serial.println(l.data[0].waveform);
   

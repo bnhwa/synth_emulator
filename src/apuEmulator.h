@@ -44,19 +44,21 @@ class ADSR{
     public:
         ADSR();
         float getADSR(uint16_t cnt, uint16_t max_cnt);
+
         void setAttack(float a, float m);
         void setDecay(float d);
         void setSustain(float s, float s_lev);
         void setSustainLevel(float s_lev);
         void setRelease(float r);
+        float getRelease();
     private:
         //depending on memory considerations, use uints and float casting,
         //but sound is not as smooth
         float attack = 0.2;
-        float maxAttack = 1.0;
+        float maxAttack = 0.95;
         float decay = 0.2;
         float sustain = 0.6;
-        float sustain_level = 0.0;
+        float sustain_level = 0.1;
         float release = 0.1;
         float adsr_tot = attack+decay+sustain+release;
         float dsr = 0;
@@ -79,7 +81,7 @@ class OscList{//max of 150 notes per measure, waveform, duration, change that to
     uint16_t osc_length = 0;
     uint16_t limit;
     oscillator data[max_notes_per_measure];
-    void add_note(oscillator item, uint32_t cycles_per_measure, float speed, byte bpm );
+    void add_note(oscillator item, byte bpm );
     void append(oscillator item);
     void remove(byte index);
 };
@@ -118,7 +120,9 @@ class APU {
     uint32_t next_cycle = 0;
     uint32_t cpu_cycles = 0;//4000 cycles by default = 1 measure
     uint32_t cycles_per_measure = def_cycles_per_measure;
+    uint32_t measure_iter_cnt = 0;//iterations per measure
     uint32_t measure_count = 0;//measure by measure, 
+    uint32_t measure_subcount = 0;//number of measure subcycles
     uint32_t t_last = 0;
     const uint8_t audio_divisor = 2;
     uint8_t audio_counter = 0;

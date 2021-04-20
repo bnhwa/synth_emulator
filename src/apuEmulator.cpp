@@ -4,19 +4,19 @@
 		this->limit = limit;
 	}
 
-    void OscList::add_note(oscillator item, uint32_t cycles_per_measure, float speed, byte bpm) {
+    void OscList::add_note(oscillator item, byte bpm) {
       // scale 4/beats to that of program cycle
       // 1 bpm is approximately 1 sec
       //length in cycles
-      item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
-      item.max_cnt = item.ctr;
-      //if use adsr, add
+      // item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+      // item.max_cnt = item.ctr;
+      // //if use adsr, add
+      item.pos = item.pos/float(bpm);
 
-
-      if (item.pos!=0){
-      	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
-      	Serial.println(item.pos);
-      }
+      // if (item.pos!=0){
+      // 	item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
+      // 	Serial.println(item.pos);
+      // }
       append(item);
     }
 	void OscList::append(oscillator item){
@@ -79,7 +79,7 @@
     		pos,
     		note_len
     	};
-    	sn_data.add_note(tmp,cycles_per_measure,(this->speed),bpm);
+    	sn_data.add_note(tmp,bpm);
     }
     // void APU::add_oscillator_queue(oscillator item){
     // 	//add to measure queue
@@ -90,7 +90,15 @@
       	// scale 4/beats to that of program cycle
       	// 1 bpm is approximately 1 sec
       	//length in cycles
-      	this->active_oscs.add_note(item,cycles_per_measure,(this->speed),bpm);
+        item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+        item.max_cnt = item.ctr;
+        //if use adsr, add
+        if (item.pos!=0){
+         item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
+         // Serial.println(item.pos);
+        }
+
+      	this->active_oscs.add_note(item,bpm);
    
     }
     void APU::remove(byte index) {
@@ -115,30 +123,43 @@
     
         if (t_now >= next_cycle) {
           //clock audio processing unit
-          if (cpu_cycles>=cycles_per_measure){
-          	//increment measure
+          if (measure_subcount>=cycles_per_measure){
+          	//increment measure            //add to stack
             measure_count+=1;
-            cpu_cycles = 0;
+            measure_subcount=0;
           }
           next_cycle += cycle_period;
           //queued
           bool iterate = ((cpu_cycles % 200)==0);
-          for (byte i =0; i< sn_data.osc_length;i++){
-            //update counter for enqueued oscillators
-			oscillator* idx = &sn_data.data[i];
-			if (iterate) idx->pos-=1;
-            if(idx->pos <=0){
-            	idx->pos=0;
-            	active_oscs.append(sn_data.data[i]);
-                sn_data.remove(i);
-                
+          if (iterate){
+            //presorted note queue
+            measure_subcount += 1;
+            float m_pos = float(measure_count+(float(measure_subcount)/float(cycles_per_measure)))*speed;
+            while (sn_data.osc_length>0){
+              //assume song notes are fed in order
+              oscillator* idx = &sn_data.data[0];
+              if ((idx->pos)> m_pos){
+                //break if 4>0
+                break;
+              }else{
+
+                //mult pos for both, and append to stack
+                // idx->pos-=m_pos;//minus whatever incrementer
+                idx->ctr = uint16_t((float(idx->ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+                idx->max_cnt = idx->ctr;
+                idx->ctr+=idx->max_cnt*adsr.getRelease();
+                //if use adsr, add
+                active_oscs.append(sn_data.data[0]);
+                sn_data.remove(0);
+              }
             }
           }
+
           //active
           for (byte i =0; i< active_oscs.osc_length;i++){
             //update counter for current oscillators
-			oscillator* idx = &active_oscs.data[i];
-			if (iterate) idx->ctr-=1;
+    		    oscillator* idx = &active_oscs.data[i];
+            if (iterate) idx->ctr-=1;
             if(idx->ctr <=0){
                 active_oscs.remove(i);
 
@@ -146,8 +167,11 @@
           }
 
           cpu_cycles += 1;
+
         }
     
+
+
         if (t_now >= next_audio) {
           //iterate notes
           next_audio += audio_period;
@@ -163,6 +187,7 @@
         }
         t_last = t_now;
       }
+      // Serial.println(measure_count);
 
     }
     void APU::playAudio(byte index){
@@ -272,3 +297,6 @@
          return (currpos)*(sustain_level/release);
        }
     }
+    float ADSR::getRelease(){
+      return release;
+     }
