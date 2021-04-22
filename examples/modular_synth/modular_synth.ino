@@ -1,7 +1,7 @@
 #include <apuEmulator.h>
 #include <notes.h>
 
-//set DAC voltage out pin
+
 APU apu= APU(25);
 
 
@@ -11,46 +11,109 @@ void setup(){
   Serial.begin(9600);
 //  //note,octave,note_len,note_pos,waveform within measure
 
-    apu.add_note_queue(C,2,1,  1, 0);
-    apu.add_note_queue(DS,2,1,   2, 0);
-    apu.add_note_queue(GS,2,1,  3,0);
-    apu.add_note_queue(C,3,1,    4,0);
-    apu.add_note_queue(GS,2,1,  5,0);
-    apu.add_note_queue(DS,2,1,   6, 0);
-    apu.add_note_queue(C,2,1,  6+1, 0);
-    apu.add_note_queue(DS,2,1,   6+2, 0);
-    apu.add_note_queue(GS,2,1,  6+3,0);
-    apu.add_note_queue(C,3,1,    6+4,0);
-    apu.add_note_queue(GS,2,1,  6+5,0);
-    apu.add_note_queue(DS,2,1,   6+6, 0);
+apu.add_note_queue(A,5,1.1,0.0,0);
+apu.add_note_queue(GS,5,1.1,1.0,0);
+apu.add_note_queue(CS,5,7.0,1.0,0);
+apu.add_note_queue(A,4,7.0,1.0,0);
+apu.add_note_queue(E,5,1.1,2.0,0);
+apu.add_note_queue(CS,5,1.1,3.0,0);
+apu.add_note_queue(B,4,1.1,4.0,0);
+apu.add_note_queue(CS,5,3.0,5.0,0);
+apu.add_note_queue(FS,5,1.1,8.0,0);
+apu.add_note_queue(E,5,1.1,9.0,0);
+apu.add_note_queue(C,5,7.0,9.0,0);
+apu.add_note_queue(A,4,7.0,9.0,0);
+apu.add_note_queue(D,5,1.1,10.0,0);
+apu.add_note_queue(A,4,1.1,11.0,0);
+apu.add_note_queue(G,4,1.1,12.0,0);
+apu.add_note_queue(A,4,3.0,13.0,0);
+apu.add_note_queue(F,5,1.1,16.0,0);
+apu.add_note_queue(E,5,1.1,17.0,0);
+apu.add_note_queue(D,5,4.0,17.0,0);
+apu.add_note_queue(AS,4,7.0,17.0,0);
+apu.add_note_queue(D,5,1.1,18.0,0);
+apu.add_note_queue(AS,4,1.1,19.0,0);
+apu.add_note_queue(C,5,1.1,20.0,0);
+apu.add_note_queue(G,5,3.0,21.0,0);
+apu.add_note_queue(AS,4,3.0,21.0,0);
+apu.add_note_queue(G,4,3.0,21.0,0);
+apu.add_note_queue(FS,5,0.5,24.0,0);
+apu.add_note_queue(F,5,0.5,24.5,0);
+apu.add_note_queue(E,5,7.0,25.0,0);
+apu.add_note_queue(G,5,7.0,25.0,0);
+apu.add_note_queue(E,5,7.0,25.0,0);
+apu.add_note_queue(CS,5,7.0,25.0,0);
+apu.add_note_queue(A,4,7.0,25.0,0);
+apu.add_note_queue(E,5,1.0,40.0,0);
+apu.add_note_queue(E,5,1.0,40.0,0);
+apu.add_note_queue(C,5,1.0,40.0,0);
+apu.add_note_queue(F,5,1.0,41.0,0);
+apu.add_note_queue(C,5,1.0,41.0,0);
+apu.add_note_queue(A,4,1.0,41.0,0);
+apu.add_note_queue(E,5,1.0,42.0,0);
+apu.add_note_queue(E,4,1.0,42.0,0);
+apu.add_note_queue(A,5,1.0,43.0,0);
+apu.add_note_queue(F,4,1.0,43.0,0);
+apu.add_note_queue(E,5,1.0,44.0,0);
+apu.add_note_queue(A,4,1.0,44.0,0);
+apu.add_note_queue(F,5,1.0,45.0,0);
+apu.add_note_queue(C,5,1.0,45.0,0);
+apu.add_note_queue(E,5,2.0,46.0,0);
+apu.add_note_queue(E,5,2.0,46.0,0);
+apu.add_note_queue(D,5,1.0,48.0,0);
+apu.add_note_queue(D,5,1.0,48.0,0);
+apu.add_note_queue(B,4,1.0,48.0,0);
+apu.add_note_queue(E,5,1.0,49.0,0);
+apu.add_note_queue(B,4,1.0,49.0,0);
+apu.add_note_queue(G,4,1.0,49.0,0);
+apu.add_note_queue(D,5,1.0,50.0,0);
+apu.add_note_queue(D,4,1.0,50.0,0);
+apu.add_note_queue(G,5,1.0,51.0,0);
+apu.add_note_queue(B,4,1.0,51.0,0);
+apu.add_note_queue(D,5,1.0,52.0,0);
+apu.add_note_queue(C,4,1.0,52.0,0);
+apu.add_note_queue(E,5,1.0,53.0,0);
+apu.add_note_queue(E,5,1.0,53.0,0);
+apu.add_note_queue(D,5,2.0,54.0,0);
+apu.add_note_queue(G,5,2.0,54.0,0);
+apu.add_note_queue(B,4,1.0,56.0,0);
+apu.add_note_queue(DS,5,1.0,56.0,0);
+apu.add_note_queue(B,4,1.0,56.0,0);
+apu.add_note_queue(C,5,1.0,57.0,0);
+apu.add_note_queue(B,4,1.0,57.0,0);
+apu.add_note_queue(A,4,1.0,57.0,0);
+apu.add_note_queue(B,4,1.0,58.0,0);
+apu.add_note_queue(FS,4,1.0,58.0,0);
+apu.add_note_queue(AS,4,1.0,59.0,0);
+apu.add_note_queue(A,4,1.0,59.0,0);
+apu.add_note_queue(B,4,1.0,60.0,0);
+apu.add_note_queue(G,5,1.0,60.0,0);
+apu.add_note_queue(DS,5,1.0,61.0,0);
+apu.add_note_queue(FS,5,1.0,61.0,0);
+apu.add_note_queue(FS,5,1.0,62.0,0);
+apu.add_note_queue(DS,5,1.0,62.0,0);
+apu.add_note_queue(A,5,1.0,63.0,0);
+apu.add_note_queue(E,4,1.0,63.0,0);
+apu.add_note_queue(A,5,2.0,64.0,0);
+apu.add_note_queue(FS,5,1.0,64.0,0);
+apu.add_note_queue(C,5,1.0,64.0,0);
+apu.add_note_queue(E,5,1.0,65.0,0);
+apu.add_note_queue(B,4,1.0,65.0,0);
+apu.add_note_queue(G,5,1.0,66.0,0);
+apu.add_note_queue(DS,5,1.0,66.0,0);
+apu.add_note_queue(AS,4,1.0,66.0,0);
+apu.add_note_queue(FS,5,1.0,67.0,0);
+apu.add_note_queue(E,5,1.0,67.0,0);
+apu.add_note_queue(G,5,1.0,68.0,0);
+apu.add_note_queue(G,5,1.0,68.0,0);
+apu.add_note_queue(FS,5,1.0,69.0,0);
+apu.add_note_queue(B,4,1.0,69.0,0);
+apu.add_note_queue(DS,5,1.0,70.0,0);
+apu.add_note_queue(G,4,1.0,70.0,0);
+apu.add_note_queue(E,5,1.0,71.0,0);
+apu.add_note_queue(B,4,1.0,71.0,0);
 
-    apu.add_note_queue(C,2,1,  12+1, 0);
-    apu.add_note_queue(E,2,1,   12+2, 0);
-    apu.add_note_queue(AS,2,1,  12+3,0);
-    apu.add_note_queue(C,3,1,    12+4,0);
-    apu.add_note_queue(AS,2,1,  12+5,0);
-    apu.add_note_queue(E,2,1,   12+6, 0);
-    
-    apu.add_note_queue(C,2,1,  18+1, 0);
-    apu.add_note_queue(E,2,1,   18+2, 0);
-    apu.add_note_queue(AS,2,1,  18+3,0);
-    apu.add_note_queue(C,3,1,    18+4,0);
-    apu.add_note_queue(AS,2,1,  18+5,0);
-    apu.add_note_queue(E,2,1,   18+6, 0);
 
-
-//    apu.add_note_queue(C,3,0.5,  3+0, 1);
-//    apu.add_note_queue(DS,3,0.5,   3+0.5, 1);
-//    apu.add_note_queue(GS,3,0.5,  3+1,1);
-//    apu.add_note_queue(C,4,0.5,    3+1.5,1);
-//    apu.add_note_queue(DS,3,0.5,   3+2, 1);
-//    apu.add_note_queue(GS,3,0.5,  3+2.5,1);
-    
-//  apu.remove(0);
-//  Serial.println(l.data[0].waveform);
-  
-//  initWaves();
-//  apu.setSpeed(0.25);
 //  apu.setSpeed(8);
   apu.iterateAll();
 }
