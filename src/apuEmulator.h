@@ -2,7 +2,7 @@
 #define _APUEMULATOR_h
 
 #include "arduino.h"
-#define max_oscs 10 //max number of oscillators
+#define max_oscs 20 //max number of oscillators
 #define max_notes_queue 512 //max notes in queue
 //TODO, for mem purposes encode/decode note input as bytes
 //=========================================
@@ -55,10 +55,10 @@ class ADSR{
     private:
         //depending on memory considerations, use uints and float casting,
         //but sound is not as smooth
-        float attack = 0.2;
-        float maxAttack = 0.95;
-        float decay = 0.2;
-        float sustain = 0.6;
+        float attack = 0.08;
+        float maxAttack = 1.0;
+        float decay = 0.08;
+        float sustain = 0.84;
         float sustain_level = 0.1;
         float release = 0.1;
         float adsr_tot = attack+decay+sustain+release;
