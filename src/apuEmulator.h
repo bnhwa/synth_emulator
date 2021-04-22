@@ -3,7 +3,7 @@
 
 #include "arduino.h"
 #define max_oscs 10 //max number of oscillators
-#define max_notes_queue 256 //max notes in queue
+#define max_notes_queue 512 //max notes in queue
 //TODO, for mem purposes encode/decode note input as bytes
 //=========================================
 // wave stuff
@@ -82,7 +82,7 @@ class OscList{
     uint16_t osc_length = 0;
     uint16_t limit;
     oscillator data[max_notes_queue];
-    void add_note(oscillator item, byte bpm );
+    void add_note(oscillator item );
     void append(oscillator item);
     void remove(byte index);
 
@@ -113,7 +113,7 @@ class APU {
     const uint32_t cycle_period = F_CPU / APU_FREQ;
     const uint16_t audio_rate = 44100;
     const uint32_t audio_period = F_CPU / audio_rate;//5442
-    const uint32_t note_offset = 250;//1000 for esp32
+    const uint32_t note_offset = 64;//1000 for esp32
     const uint32_t def_cycles_per_measure = 4000;
     uint32_t next_audio = 0;
     uint32_t next_cycle = 0;

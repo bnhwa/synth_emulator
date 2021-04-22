@@ -4,9 +4,9 @@
 		this->limit = limit;
 	}
 
-    void OscList::add_note(oscillator item, byte bpm) {
+    void OscList::add_note(oscillator item) {
       // scale beats to that of program cycle, default 4/4 time
-      item.pos = item.pos/float(bpm);
+      // item.pos = item.pos/float(bpm);
       append(item);
     }
 	void OscList::append(oscillator item){
@@ -32,8 +32,8 @@
     }
     void APU::initPitch(){
       //scale pitches to appropriate level
-      //pitches are note_freq*1000*(1/audio_period);
       for (byte i = 0; i<cnt_notes(narr); i++){
+        // narr[i]=  narr[i]*(float(note_offset)/float(audio_period));
         narr[i]=  narr[i]*(float(note_offset)/float(audio_period));
       }
     }
@@ -62,27 +62,36 @@
     	return narr[l_nt] * pow(2, oct);
     }
     void APU::add_note_queue( uint16_t pitch, uint8_t octave, float note_len,float pos,uint16_t waveform){
+
+      uint16_t tmp_ctr = uint16_t((float(note_len)*float(cycles_per_measure)/float(bpm)*speed));//
+      uint16_t tmp_max_cnt = tmp_ctr;
+      tmp_ctr+=tmp_max_cnt*adsr.getRelease();
+      // tmp.pos = tmp.pos/float(bpm);
     	oscillator tmp = {
     		waveform,
     		get_freq(pitch,octave),
-    		note_len,
-    		pos,
-    		note_len
+    		tmp_ctr,
+    		pos/float(bpm),
+    		tmp_max_cnt
     	};
-    	sn_data.add_note(tmp,bpm);
+      // tmp.ctr = uint16_t((float(tmp.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+      // tmp.max_cnt = tmp.ctr;
+      // tmp.ctr+=tmp.max_cnt*adsr.getRelease();
+      // tmp.pos = tmp.pos/float(bpm);
+    	sn_data.add_note(tmp);
     }
     void APU::append(oscillator item) {
+      //depreciated as this rounds down floats, use normaladd_note_queue
       	//append oscillaror directly to be played,
-        item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
-        item.max_cnt = item.ctr;
-        item.pos = 0;
-        //if use adsr, add
-        if (item.pos!=0){
-         item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
-         // Serial.println(item.pos);
-        }
-
-      	this->active_oscs.add_note(item,bpm);
+        // item.ctr = uint16_t((float(item.ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+        // item.max_cnt = item.ctr;
+        // item.pos = 0;
+        // //if use adsr, add
+        // if (item.pos!=0){
+        //  item.pos = (item.pos)*cycles_per_measure/float(bpm)*speed;//
+        //  // Serial.println(item.pos);
+        // }
+      	this->active_oscs.add_note(item);
    
     }
     void APU::remove(byte index) {
@@ -125,9 +134,9 @@
               }else{
 
                 //mult pos for both, and append to stack
-                idx->ctr = uint16_t((float(idx->ctr)*float(cycles_per_measure)/float(bpm)*speed));//
-                idx->max_cnt = idx->ctr;
-                idx->ctr+=idx->max_cnt*adsr.getRelease();
+                // idx->ctr = uint16_t((float(idx->ctr)*float(cycles_per_measure)/float(bpm)*speed));//
+                // idx->max_cnt = idx->ctr;
+                // idx->ctr+=idx->max_cnt*adsr.getRelease();
                 //if use adsr, add
                 active_oscs.append(sn_data.data[0]);
                 sn_data.remove(0);
